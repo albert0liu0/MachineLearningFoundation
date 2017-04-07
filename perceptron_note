@@ -1,0 +1,63 @@
+Perceptron Learning Algorithm
+Represent property of data as vector.
+x=(x1,x2,...,xn)
+Represent result of data as {1,-1}
+y=1/-1
+
+Find a proper n-dim vector w and scalar t.
+predict input by calculating whether <w,x> > t.
+By letting w0=-t, x0=0,
+We are actually finding a proper (n+1)-dim vector w
+predict input by calculating sign(<w,x>)
+
+The shape of <w,x>=0 is a hyperplane
+This perceptron is linear
+
+Procedure:
+    for t from 0:
+        find a mistake (x,y) (i.e. sign(<w,x>)!=y)
+        if y>0, then angle between w and x is too large
+            w_{t+1}=>w_t+x
+        
+        if y<0, then angle between w and x is too small
+            w_{t+1}=>w_t-x
+        i.e. w_{t+1}=>w_t+yx
+        
+        if no mistake is found, then break
+
+Guarantee of PLA:
+
+if data D is linear seperatable:
+    exists perfect w(f) s.t. for all data pair(x,y), y=sign(<w(f),x>)
+    i.e. for all data pair(x_i, y_i), y_i*<w(f),x> >= min(y_i*<w(f),x> >0
+    
+    when updating with x_j, y_j,
+    <wf,w_{t+1}> = <wf,w_t+y_j*x_j>
+                >= <wf,w_t>+min y_i*<wf,x_i>
+                >  <wf,w_t>
+
+    |w_{t+1}|^2 = |w_t+y_j*x_j|^2
+                = |w_t|^2+ 2y_j*<w_t,x_j> + |y_j*x_j|^2
+                <= |w_t|^2 +0+ |y_j*x_j|^2
+                <=|w_t|^2+max(|y_i*x_i|^2)
+
+    As a result, <wf/|wf|,w_t/|w_t|> >= O(sqrt(t))
+
+    Actually t <= R^2/r^2, while R=max|x_i|^2
+                                 r=min(y_i*<wf/|wf|, xi>)
+
+    however, r is dependent on wf, so we can't know when PLA would halt if wf is not determined
+
+
+if data D is not linear seperatable:
+    find wg s.t. min(sum(|yi!=sign(<w,xi>)|), i.e. min(number of mistakes)
+    modify PLA algorithm by keeping best found w
+    procedure:
+        for t from 0:
+            find a random mistake (x,y)
+            keep wb as a best found w
+            w_{t+1}=> w_t_yx
+            if(w{t+1} make fewer mistake than wb, then wb=>w_{t+1}
+            until enough iteration...
+        return wb
+
